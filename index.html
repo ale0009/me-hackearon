@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¿Me hackearon? · Revisa tu web</title>
+  <meta name="description" content="Revisa si una web WordPress o de plantilla muestra signos de hackeo: spam oculto de casinos, código inyectado, redirecciones, contenido distinto para Google e higiene de WordPress. Te dice cómo arreglar cada cosa. Pasivo, gratis y sin servidor.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bangers&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F9F9F7'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%230A090A' stroke-width='3'/%3E%3Cpath d='M20 20l8 8' stroke='%23CB433E' stroke-width='4'/%3E%3C/svg%3E">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#revisar">Saltar a la revisión</a>
+  <header class="cabecera">
+    <span class="kanji" aria-hidden="true">侵</span>
+    <div class="titulo">
+      <p class="antetitulo">Revisión pasiva · WordPress y webs de plantilla</p>
+      <h1>¿Me hackearon?</h1>
+    </div>
+    <nav class="nav">
+      <a class="boton-linea" href="proceso/">Cómo se hizo</a>
+      <button type="button" class="boton-linea" id="tema" aria-label="Cambiar tema">Tema: auto</button>
+    </nav>
+  </header>
+
+  <main class="tablero">
+    <section class="entrada vineta" id="revisar" aria-labelledby="t-revisar">
+      <h2 id="t-revisar" class="rotulo">Revisa una web</h2>
+      <div class="pestanas" role="tablist" aria-label="Forma de revisión">
+        <button role="tab" id="tab-marcador" aria-controls="p-marcador" aria-selected="true">Marcador</button>
+        <button role="tab" id="tab-pegar" aria-controls="p-pegar" aria-selected="false" tabindex="-1">Pegar el código</button>
+        <button role="tab" id="tab-vigilar" aria-controls="p-vigilar" aria-selected="false" tabindex="-1">Vigilancia nocturna</button>
+      </div>
+
+      <div class="panel" id="p-marcador" role="tabpanel" aria-labelledby="tab-marcador">
+        <p class="paso"><b>1.</b> Arrastra este botón a tu barra de favoritos:</p>
+        <p class="arrastrar"><a id="marcador" class="boton" href="#" title="Arrástralo a la barra de favoritos">¿Me hackearon?</a></p>
+        <p class="paso"><b>2.</b> Abre la web que quieres revisar y pulsa el favorito. Se abrirá esta página con el informe.</p>
+        <p class="ayuda">El marcador lee la página <b>tal como llega del servidor y tal como se ve</b>, sus cabeceras y tres rutas públicas de WordPress (<code>/wp-json/wp/v2/users</code>, <code>/xmlrpc.php</code>, <code>/readme.html</code>). Todo pasa en tu navegador: nada se envía a otro servidor.</p>
+        <p class="ayuda">¿En el celular, o el sitio bloquea el marcador? Usa «Pegar el código».</p>
+      </div>
+
+      <form class="panel" id="p-pegar" role="tabpanel" aria-labelledby="tab-pegar" hidden autocomplete="off">
+        <label class="etiqueta" for="url">Dirección de la web (opcional, mejora el análisis)</label>
+        <input id="url" type="url" inputmode="url" placeholder="https://mi-sitio.com/" spellcheck="false">
+        <label class="etiqueta" for="codigo">Código fuente: abre la web, pulsa <kbd>Ctrl</kbd>+<kbd>U</kbd>, copia todo y pégalo aquí</label>
+        <textarea id="codigo" rows="9" spellcheck="false" placeholder="<!doctype html>…"></textarea>
+        <div class="acciones">
+          <button type="submit" class="boton">Revisar</button>
+          <button type="button" class="boton-texto" id="cargar-ejemplo">Cargar ejemplo infectado</button>
+        </div>
+      </form>
+
+      <div class="panel" id="p-vigilar" role="tabpanel" aria-labelledby="tab-vigilar" hidden>
+        <p>Cada noche, GitHub Actions revisa una lista de sitios <b>dos veces</b>: como navegador y como Googlebot. Así detecta el spam que el atacante solo le muestra al buscador. Si un sitio empeora, abre un <i>issue</i> que llega por correo, y lo cierra cuando se limpia.</p>
+        <div id="vigilancia" class="tarjetas"><p class="ayuda">Cargando la última vigilancia…</p></div>
+        <p class="ayuda">Para vigilar tus sitios: haz un <i>fork</i> del repositorio, mejor privado, y pon tus direcciones en <code>vigilancia/sitios.txt</code>. Aquí solo se vigilan sitios propios del autor: revisar públicamente webs ajenas sería divulgar sus fallas.</p>
+      </div>
+    </section>
+
+    <section class="informe vineta" aria-live="polite" aria-labelledby="veredicto">
+      <p class="sello" id="sello" hidden>Ejemplo</p>
+      <p class="veredicto" id="veredicto"><span class="espera">Esperando una web</span></p>
+      <div id="resumen" class="resumen"></div>
+      <ol id="hallazgos" class="hallazgos"></ol>
+      <div id="aviso" class="aviso" hidden>
+        <h3 class="sub">Avisa al dueño</h3>
+        <p class="ayuda">Borrador de aviso responsable. Revísalo, agrega tu firma y envíalo al correo de contacto del sitio.</p>
+        <textarea id="aviso-texto" rows="10" spellcheck="true"></textarea>
+        <div class="acciones">
+          <button type="button" class="mini" id="copiar-aviso">Copiar aviso</button>
+          <button type="button" class="mini" id="descargar">Descargar informe (.md)</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Revisión <b>pasiva</b>: solo lee lo que la web entrega a cualquier visitante. No prueba contraseñas ni explota fallas. Desde afuera no se ven las puertas traseras del servidor: si hay signos de infección, revisa también por dentro, con un escáner como Wordfence o Sucuri. Usa la herramienta en sitios propios o para avisar de buena fe a sus dueños.</p>
+    <p><a href="https://github.com/ale0009">Mario Puerta «ale0009»</a> × <a href="https://www.linkedin.com/in/davidalexanderrinconcorredorkuronoma/">David Rincón «Kuronoma»</a> · <a href="#">Portafolio</a> · <a href="proceso/">Cómo se hizo</a></p>
+  </footer>
+</body>
+</html>

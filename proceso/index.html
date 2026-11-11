@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cómo se hizo · ¿Me hackearon?</title>
+  <meta name="description" content="La investigación detrás de ¿Me hackearon?: un caso real de spam SEO oculto en la web de una entidad pública, cómo funcionan estos hackeos, las reglas de detección, los controles contra falsos positivos y el aviso responsable.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bangers&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="../css/estilo.css">
+  <link rel="stylesheet" href="../css/proceso.css">
+  <script type="module" src="../js/proceso.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <header class="cabecera">
+    <span class="kanji" aria-hidden="true">調</span>
+    <div class="titulo">
+      <p class="antetitulo">¿Me hackearon? · cómo se hizo</p>
+      <h1>El casino escondido</h1>
+    </div>
+    <nav class="nav">
+      <a class="boton-linea" href="../">Volver a la herramienta</a>
+      <button type="button" class="boton-linea" id="tema" aria-label="Cambiar tema">Tema: auto</button>
+    </nav>
+  </header>
+
+  <main class="lectura" id="contenido">
+    <nav class="indice vineta" aria-label="Contenido">
+      <ol>
+        <li><a href="#origen">Cómo empezó</a></li>
+        <li><a href="#caso">El caso real</a></li>
+        <li><a href="#hackeos">Cómo funcionan estos hackeos</a></li>
+        <li><a href="#metodo">Método</a></li>
+        <li><a href="#controles">Controles y falsos positivos</a></li>
+        <li><a href="#diseno">Decisiones de diseño</a></li>
+        <li><a href="#aviso">El aviso responsable</a></li>
+        <li><a href="#limites">Limitaciones y fe de erratas</a></li>
+      </ol>
+    </nav>
+
+    <section id="origen" class="vineta">
+      <h2 class="rotulo">1 · Cómo empezó</h2>
+      <p class="entrada-texto">Mientras construíamos <a href="https://ale0009.github.io/cayo-loterias/">¿Cayó?</a>, un revisor de loterías, uno de los agentes que leía resultados oficiales reportó algo raro: la portada de una entidad pública colombiana tenía <b>cientos de menciones a casinos</b> que nadie veía.</p>
+      <p>La página se veía normal. El spam estaba en el código, escondido para que solo lo leyeran los buscadores. La pregunta que salió de ahí: <b>¿cuántas webs de entidades y pymes están así sin que sus dueños lo sepan?</b> Y la siguiente: ¿se puede revisar gratis, desde afuera, sin atacar nada?</p>
+    </section>
+
+    <section id="caso" class="vineta">
+      <h2 class="rotulo">2 · El caso real</h2>
+      <p>Datos de la portada, revisada el 11 de noviembre de 2026 solo con su código público. La entidad no se nombra: se le avisó en privado y esta página no divulga su falla.</p>
+      <div class="cifras-grandes">
+        <div><b>82</b><span>bloques ocultos con spam</span></div>
+        <div><b>61</b><span>dominios externos enlazados</span></div>
+        <div><b>467</b><span>menciones de casino, apuestas y bonos</span></div>
+        <div><b>0</b><span>visibles para una persona</span></div>
+      </div>
+      <p>Cada bloque estaba desplazado miles de píxeles fuera de la pantalla:</p>
+      <p class="oculto-demo">&lt;div style="position: absolute;left: -7449px;top: -6026px"&gt;&lt;h2&gt;Exploring Casino Bonuses and Promotions…&lt;/h2&gt; … &lt;a href="https://…"&gt;…&lt;/a&gt;&lt;/div&gt;</p>
+      <figure class="grafica">
+        <figcaption>Lo que había escondido en la portada <span class="nota">(calculado aquí con el analizador)</span></figcaption>
+        <div id="g-caso"></div>
+      </figure>
+      <figure class="grafica">
+        <figcaption>Extensión de los 61 dominios enlazados <span class="nota">(calculado aquí)</span></figcaption>
+        <div id="g-tld"></div>
+        <p class="nota"><b>Hallazgo:</b> solo 10 de los 61 dominios tienen una extensión obvia de apuestas (.bet, .casino). La mayoría son dominios europeos de apariencia normal (.fr, .uk, .de), probablemente comprados después de caducar o hackeados. Por eso la regla principal no busca nombres sospechosos, sino <b>contenido escondido con enlaces externos</b>.</p>
+      </figure>
+    </section>
+
+    <section id="hackeos" class="vineta">
+      <h2 class="rotulo">3 · Cómo funcionan estos hackeos</h2>
+      <p>Google documenta varias familias de hackeos de spam. Todas buscan lo mismo: usar el buen nombre de un dominio confiable para posicionar casinos, farmacias o tiendas de imitaciones.</p>
+      <table class="tabla">
+        <thead><tr><th>Tipo</th><th>Qué hace</th><th>Cómo lo detecta la herramienta</th></tr></thead>
+        <tbody>
+          <tr><td>Enlaces y texto ocultos</td><td>Mete bloques invisibles con enlaces en páginas reales del sitio</td><td>Estilos que esconden contenido (fuera de pantalla, <code>display:none</code>, tamaño 0) <b>con</b> enlaces externos o palabras de spam</td></tr>
+          <tr><td><a href="https://web.dev/articles/fix-the-cloaked-keywords-hack">Palabras clave encubiertas</a></td><td>Muestra el spam solo a Google («cloaking»)</td><td>La vigilancia nocturna pide la página como navegador y como Googlebot, y compara</td></tr>
+          <tr><td><a href="https://web.dev/articles/fix-the-japanese-keyword-hack">Japanese keyword hack</a></td><td>Crea páginas en japonés que venden falsificaciones</td><td>Muchos caracteres japoneses, chinos o coreanos en una página de otro idioma</td></tr>
+          <tr><td><a href="https://web.dev/articles/fix-the-gibberish-hack">Gibberish hack</a></td><td>Páginas de texto sin sentido que redirigen</td><td>Redirecciones por <code>meta refresh</code> o JavaScript hacia otro dominio</td></tr>
+          <tr><td>Código inyectado</td><td>Scripts ofuscados, iframes invisibles, mineros de criptomonedas</td><td><code>eval(atob(…))</code>, <code>fromCharCode</code> largos, hexadecimal, iframes de 0–1 px, dominios de mineros</td></tr>
+        </tbody>
+      </table>
+      <p>Además revisa la <b>higiene de WordPress</b>, que es la puerta de entrada habitual: versión desactualizada frente a la vigente (consultada en vivo en la API de WordPress.org), plugins visibles, usuarios listados en la API pública, <code>xmlrpc.php</code> activo, <code>readme.html</code> olvidado y cabeceras de seguridad (<a href="https://owasp.org/www-project-secure-headers/">OWASP Secure Headers</a>).</p>
+      <p class="nota">Fuentes: <a href="https://developers.google.com/search/docs/essentials/spam-policies">Políticas de spam de Google</a> · <a href="https://web.dev/articles/hacked">Guía de Google para sitios hackeados</a> · <a href="https://developers.google.com/search/blog/2017/12/nohacked-30-fixing-common-hack-cases">#NoHacked 3.0</a> · <a href="https://developer.wordpress.org/advanced-administration/security/hardening/">Endurecimiento de WordPress</a> · <a href="https://wordpress.org/documentation/article/faq-my-site-was-hacked/">FAQ: mi sitio fue hackeado</a>.</p>
+    </section>
+
+    <section id="metodo" class="vineta">
+      <h2 class="rotulo">4 · Método</h2>
+      <p>Toda la detección vive en <b>un solo archivo</b> (<code>js/analizador.js</code>), con funciones puras y pruebas. Lo usan las tres formas de revisar:</p>
+      <div class="flujo">
+        <div><b>Marcador</b><span>Corre dentro de la web revisada. Lee la página del servidor y la pintada, las cabeceras y 3 rutas públicas.</span></div>
+        <div><b>Pegar el código</b><span>Ctrl+U, copiar y pegar. Funciona en cualquier dispositivo.</span></div>
+        <div><b>Vigilancia nocturna</b><span>GitHub Actions corre el mismo analizador con Node, como navegador y como Googlebot.</span></div>
+      </div>
+      <p>Cada hallazgo trae su <b>gravedad</b> (crítica, alta, media, baja o inventario), la <b>evidencia exacta</b>, <b>por qué importa</b> y <b>cómo arreglarlo</b>, paso a paso. Si hay hallazgos graves, la herramienta redacta un borrador de aviso para el dueño.</p>
+    </section>
+
+    <section id="controles" class="vineta">
+      <h2 class="rotulo">5 · Controles y falsos positivos</h2>
+      <p>Una herramienta de seguridad que grita «¡infectada!» por error pierde toda credibilidad. Por eso se probó contra el caso real y contra cinco sitios limpios, incluidas dos loterías que hablan legítimamente de «apuestas»:</p>
+      <figure class="grafica">
+        <figcaption>Resultado en el caso y en los controles <span class="nota">(11 nov 2026, calculado aquí)</span></figcaption>
+        <div id="g-controles"></div>
+      </figure>
+      <ul class="puntos">
+        <li><b>Umbrales:</b> las palabras de spam solo cuentan a partir de 5 menciones. Un bloque oculto solo es sospechoso si lleva enlaces externos o spam: un menú móvil escondido no lo es. Un desplazamiento menor de 999 px se considera diseño.</li>
+        <li><b>Falso positivo encontrado y corregido:</b> el blog de WordPress.org salía con «iframe invisible sospechoso». Era el iframe estándar de Google Tag Manager. Ahora se excluyen los servicios conocidos y hay una prueba para ese caso.</li>
+        <li>Las pruebas del repositorio usan un ejemplo <b>sintético</b>, con dominios <code>.invalid</code> inventados, que reproduce los patrones del caso real sin exponerlo.</li>
+      </ul>
+    </section>
+
+    <section id="diseno" class="vineta">
+      <h2 class="rotulo">6 · Decisiones de diseño</h2>
+      <div class="dos">
+        <div>
+          <p><b>Pasiva, siempre.</b> Solo lee lo que la web entrega a cualquier visitante. No prueba contraseñas, no busca copias de seguridad olvidadas, no explota fallas. Así la puede usar cualquiera sin cruzar una línea legal o ética.</p>
+          <p><b>El marcador no inyecta código ajeno.</b> No carga scripts de otro dominio dentro de la web revisada: recoge el texto y se lo pasa a la herramienta por <code>postMessage</code>. El análisis corre en tu navegador y nada se envía a un servidor.</p>
+        </div>
+        <div>
+          <p><b>No se vigilan webs ajenas en público.</b> Los resultados de la vigilancia se publican en el repositorio, así que la lista trae solo sitios propios del autor. Para vigilar los tuyos, la guía recomienda un fork privado.</p>
+          <p><b>Sin IA y sin servidor.</b> Las reglas son explícitas y auditables. La versión vigente de WordPress se consulta en vivo y la vigilancia corre gratis en GitHub Actions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="aviso" class="vineta">
+      <h2 class="rotulo">7 · El aviso responsable</h2>
+      <p>Al dueño del caso real se le envió un aviso al correo institucional que publica en su web. El aviso incluía qué se encontró, cómo verificarlo en 10 segundos (Ctrl+U y buscar «casino»), recomendaciones de limpieza y la aclaración de que no se intentó ningún acceso ni se divulgó el hallazgo. Ese texto se convirtió en el borrador automático que genera la herramienta.</p>
+      <p class="nota">Si su sitio aparece infectado: no lo publiques en redes. Avisa en privado, da tiempo para corregir y, si es una entidad pública, usa su canal oficial de PQRSD o de notificaciones.</p>
+    </section>
+
+    <section id="limites" class="vineta">
+      <h2 class="rotulo">8 · Limitaciones y fe de erratas</h2>
+      <ul class="puntos">
+        <li><b>Desde afuera no se ven las puertas traseras.</b> Un archivo malicioso en el servidor que no se muestra en la página no aparece aquí. Si hay signos de infección, hay que revisar por dentro (Wordfence, Sucuri, o comparar los archivos con las copias oficiales).</li>
+        <li>Algunos atacantes verifican que la IP sea de Google antes de mostrar el spam. En ese caso, pedir la página «como Googlebot» desde GitHub no alcanza. La herramienta Inspección de URL de Search Console sí lo ve.</li>
+        <li>Las reglas son heurísticas (señales probables, no pruebas absolutas): pueden pasar por alto técnicas nuevas o marcar algo legítimo muy raro. Por eso cada hallazgo muestra su evidencia, para que una persona decida.</li>
+        <li>Algunos sitios bloquean los marcadores con su política de seguridad de contenido (CSP). En ese caso, usa «Pegar el código».</li>
+      </ul>
+      <h3 class="sub">Fe de erratas</h3>
+      <ul class="puntos">
+        <li><b>Primer conteo del caso:</b> una revisión rápida con expresiones regulares contó 84 bloques ocultos y unos 80 dominios. El analizador cuenta 82 bloques, porque 2 no llevaban enlaces ni spam, y 61 dominios, porque agrupa subdominios bajo un mismo dominio raíz. Las cifras de esta página son las del analizador.</li>
+      </ul>
+    </section>
+
+    <p class="volver"><a class="boton" href="../">Revisar una web</a></p>
+  </main>
+
+  <footer class="pie">
+    <p><a href="https://github.com/ale0009">Mario Puerta «ale0009»</a> × <a href="https://www.linkedin.com/in/davidalexanderrinconcorredorkuronoma/">David Rincón «Kuronoma»</a> · <a href="#">Portafolio</a> · <a href="../">¿Me hackearon?</a></p>
+  </footer>
+</body>
+</html>

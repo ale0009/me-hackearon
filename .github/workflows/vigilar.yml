@@ -1,0 +1,77 @@
+name: Vigilar y publicar
+
+# Cada noche revisa los sitios de vigilancia/sitios.txt con el mismo analizador de la página
+# (como navegador y como Googlebot), guarda el resultado, abre o cierra issues y publica Pages.
+# Configura Pages con «Source: GitHub Actions». Sin servidor ni claves.
+on:
+  schedule:
+    - cron: "30 5 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: write
+
+concurrency:
+  group: vigilar
+  cancel-in-progress: false
+
+jobs:
+  vigilar:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Revisar sitios
+        id: revisar
+        run: node vigilancia/vigilar.mjs > avisos.tsv
+      - name: Guardar resultados
+        # Se guarda cada noche: así GitHub nunca apaga el cron por inactividad (60 días).
+        if: always()
+        run: |
+          git config user.name "me-hackearon-vigilante"
+          git config user.email "me-hackearon-vigilante@users.noreply.github.com"
+          git add datos/vigilancia.json datos/wordpress.json
+          git diff --cached --quiet || git commit -m "Vigilancia: $(date -u +%F)"
+          git pull --rebase --quiet origin main
+          git push
+      - name: Abrir o cerrar avisos
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -f avisos.tsv ] || exit 0
+          while IFS=$'\t' read -r accion titulo texto; do
+            abierto=$(gh issue list --state open --search "\"$titulo\" in:title" --json number,title --jq ".[] | select(.title==\"$titulo\") | .number" | head -1)
+            if [ "$accion" = "ABRIR" ] && [ -z "$abierto" ]; then
+              gh issue create --title "$titulo" --body "$(printf '%b' "$texto")"
+            elif [ "$accion" = "CERRAR" ] && [ -n "$abierto" ]; then
+              gh issue close "$abierto" --comment "$texto"
+            fi
+          done < avisos.tsv
+
+  publicar:
+    needs: vigilar
+    if: always() && (needs.vigilar.result == 'success' || needs.vigilar.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: despliegue
+        uses: actions/deploy-pages@v4

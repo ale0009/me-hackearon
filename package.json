@@ -1,0 +1,11 @@
+{
+  "name": "me-hackearon",
+  "version": "1.0.0",
+  "description": "¿Me hackearon? Revisor pasivo de signos de infección en webs WordPress y de plantilla: spam SEO oculto, código inyectado, cloaking e higiene de WordPress, con cómo arreglarlo. Página estática, sin servidor.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mario Alejandro Puerta Alarcón",
+  "scripts": { "test": "node --test" },
+  "engines": { "node": ">=20" }
+}

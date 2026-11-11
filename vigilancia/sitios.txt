@@ -1,0 +1,5 @@
+# Sitios que la vigilancia nocturna revisa (uno por línea). Solo sitios propios:
+# revisar en público webs ajenas sería divulgar sus fallas. Para tus sitios, usa un fork privado.
+https://kx-portafolio.vercel.app/
+https://ale0009.github.io/cayo-loterias/
+https://ale0009.github.io/sismos-colombia/
