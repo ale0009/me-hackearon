@@ -1,9 +1,9 @@
 {
- "actualizado": "2026-11-21T13:38:24.201Z",
+ "actualizado": "2026-11-22T13:30:27.465Z",
  "sitios": [
   {
    "url": "https://kx-portafolio.vercel.app/",
-   "revisado": "2026-11-21T13:38:13.697Z",
+   "revisado": "2026-11-22T13:30:16.877Z",
    "veredicto": {
     "clave": "limpia",
     "texto": "Sin signos de infección visibles desde afuera"
@@ -15,7 +15,7 @@
   },
   {
    "url": "https://ale0009.github.io/cayo-loterias/",
-   "revisado": "2026-11-21T13:38:19.071Z",
+   "revisado": "2026-11-22T13:30:22.308Z",
    "veredicto": {
     "clave": "mejorable",
     "texto": "Sin infección visible, con puntos débiles"
@@ -27,7 +27,7 @@
   },
   {
    "url": "https://ale0009.github.io/sismos-colombia/",
-   "revisado": "2026-11-21T13:38:24.201Z",
+   "revisado": "2026-11-22T13:30:27.465Z",
    "veredicto": {
     "clave": "mejorable",
     "texto": "Sin infección visible, con puntos débiles"
